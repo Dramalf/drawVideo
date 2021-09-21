@@ -30,8 +30,8 @@ export default function CanvasSlider(props) {
     }
     const { curEditId, canvasList } = props
     return (
-        <div className="flex flex-col items-stretch p-2 overflow-y-auto h-full">
-            <div className={`${"before-0"} border-yellow-700 border-2 opacity-0 hover:opacity-75 flex items-center justify-center text-gray-800`}
+        <div className="flex flex-col overflow-y-auto h-full">
+            <div className={`${"before-0"} bg-yellow-600 border-2 opacity-0 hover:opacity-75 flex items-center justify-center text-gray-800`}
                 onClick={addNewCanvas}
             >+</div>
             {
@@ -39,13 +39,13 @@ export default function CanvasSlider(props) {
                     const { id } = canvasItem
                     return (
                         <div className="flex flex-col" >
-                            <div key={id} className={`thumbnail-wrapper ${"wrapper-" + id} ${curEditId === id ? "border-yellow-200" : "border-green-200"}  border-2 flex flex-1 items-center justify-center`}
+                            <div key={id} className={`thumbnail-wrapper ${"wrapper-" + id} ${curEditId === id ? "border-indigo-600 border-4" : "border-green-100"}  border-2 flex flex-1 items-center justify-center`}
                                 onClick={switchCanvas}
                             >
                                 <canvas id={id}></canvas>
 
                             </div>
-                            <div key={id + 'add'} className={`${"before-" + (1 + index)} border-yellow-700 border-2 opacity-0 hover:opacity-75`}
+                            <div key={id + 'add'} className={`${"before-" + (1 + index)} cursor-pointer bg-yellow-600 border-2 opacity-0 hover:opacity-75`}
                                 onClick={addNewCanvas}
                             >+</div>
                         </div>

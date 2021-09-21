@@ -123,20 +123,23 @@ export default function Demo() {
     const [curEditId, setCurEditId] = useState('c1');
     return (
         <div className="flex flex-row justify-between">
-            <div className="slider-part w-32 border-2 border-gray-400 mr-4 rounded-lg" style={{ height: "80vh" }}>
+            <div className="slider-part w-32 border-2 border-gray-400 mr-4" style={{ height: "80vh" }}>
                 <CanvasSlider canvasList={canvasList} curEditId={curEditId} />
             </div>
-            <div className="cb-part flex-1 rounded-l-lg">
-                <div style={{ height: "80vh" }} className="bg-yellow-100 p-10 opacity-80">
-                    <CanvasBoard ref={drawingCanvas} canvasList={canvasList} curEditId={curEditId} /></div>
+            <div style={{ height: "80vh" }} className="cb-part flex-1 bg-gray-600 p-10 opacity-80">
 
+                <CanvasBoard ref={drawingCanvas} canvasList={canvasList} curEditId={curEditId} />
 
-            </div>
-            <div className="option-part bg-yellow-100 opacity-80">
-                <Palette canvasList={canvasList} curEditId={curEditId} />
-                <div onClick={composite}>
+                <div
+                    className="mt-2 bg-yellow-300 w-max px-2 rounded-3xl m-auto"
+                    onClick={composite}>
                     composite
                 </div>
+
+            </div>
+            <div className="option-part flex-1 bg-gray-600 opacity-80 border-l-2 border-gray-50">
+                <Palette canvasList={canvasList} curEditId={curEditId} />
+
             </div>
             <ResultDialog
                 visible={visible}

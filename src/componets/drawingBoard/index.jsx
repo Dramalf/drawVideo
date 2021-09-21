@@ -22,18 +22,19 @@ class CanvasBoard extends Component {
         !editCtx && context.fillRect(0, 0, 224, 400)
         wrapper.innerHTML = null;
         wrapper.appendChild(canvasBoard)
-        canvasBoard.classList.add("border-2", "border-gray-100")
-        document.onmousedown = (e) => {
+        canvasBoard.classList.add("scale-150")
+        canvasBoard.onmousedown = (e) => {
+            console.log(e.currentTarget)
             context.beginPath();
             context.moveTo(e.offsetX, e.offsetY);
-            document.onmousemove = function (e) {
+            canvasBoard.onmousemove = function (e) {
                 context.lineTo(e.offsetX, e.offsetY);
                 context.strokeStyle = strokeStyle
                 context.lineWidth = 2;
                 context.stroke();
             };
         }
-        document.onmouseup = function () {
+        canvasBoard.onmouseup = function () {
             context.closePath();
             ee.emit("FINISHDRAW", context)
             document.onmousemove = function () {
@@ -62,7 +63,7 @@ class CanvasBoard extends Component {
         !editCtx && context.fillRect(0, 0, 224, 400)
         wrapper.innerHTML = null;
         wrapper.appendChild(canvasBoard)
-        document.onmousedown = (e) => {
+        canvasBoard.onmousedown = (e) => {
             context.beginPath();
             context.moveTo(e.offsetX, e.offsetY);
             document.onmousemove = function (e) {
@@ -72,13 +73,14 @@ class CanvasBoard extends Component {
                 context.stroke();
             };
         }
-        document.onmouseup = function () {
+        canvasBoard.onmouseup = function () {
             context.closePath();
             ee.emit("FINISHDRAW", context)
             document.onmousemove = function () {
                 return false;
             }
         }
+        canvasBoard.classList.add("scale-150")
     }
     exportImageData = () => {
         const canvasBoard = document.getElementById("canvasBoard");

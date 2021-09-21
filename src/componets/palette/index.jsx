@@ -12,11 +12,11 @@ export default function Palette(props) {
     }, [props.curEditId])
     return (
 
-        <div className="palette">
-            <div className="">
-                <div className="rounded-full w-6 h-6" style={{ backgroundColor: selectedColor }}></div>
-            </div>
-            <ul className="flex justify-center w-20 flex-wrap">
+        <div className="palette p-10">
+
+            <div className="rounded-full w-6 h-6 m-auto" style={{ backgroundColor: selectedColor }}></div>
+
+            <ul className="flex justify-center w-40 flex-wrap m-auto">
                 {
                     colors.map(color => {
                         return (
@@ -30,20 +30,23 @@ export default function Palette(props) {
                         )
                     })
                 }
-                <li> <input type="color" /></li>
+                {/* <li> <input type="color" /></li> */}
             </ul>
+            <div className="flex items-baseline mt-3">
+                <span>duration：</span>
+                <input type="number" value={pageDuration} min={1} max={10} step={0.5} className=" w-8" onInput={e => {
+                    setpageDuration(e.target.value)
+                    const { canvasList, curEditId } = props
+                    console.log(canvasList)
+                    canvasList.some(c => {
+                        if (c.id === curEditId) {
+                            c.duration = e.target.value
+                            console.log(e.target.value)
+                        }
+                    })
+                }} />
+            </div>
 
-            <input type="number" value={pageDuration} min={1} max={10} step={0.5} className="w-full" onInput={e => {
-                setpageDuration(e.target.value)
-                const { canvasList, curEditId } = props
-                console.log(canvasList)
-                canvasList.some(c => {
-                    if (c.id === curEditId) {
-                        c.duration = e.target.value
-                        console.log(e.target.value)
-                    }
-                })
-            }} />
         </div>
     )
 }
