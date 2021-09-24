@@ -4,83 +4,81 @@ class CanvasBoard extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            strokeStyle: "#aaffee"
+            strokeStyle: "#123456",
+            lineWidth: "16"
         }
     }
     componentDidMount() {
-        const { canvasList, curEditId } = this.props
-        const { strokeStyle } = this.state
-        const wrapper = document.getElementById("canvasBoard-wrapper")
+        const context = this.drawCanvas()
 
-        const { ctx: editCtx } = canvasList.find(c => c.id === curEditId)
-        const canvasBoard = document.createElement('canvas')
-        canvasBoard.height = 400;
-        canvasBoard.width = 224;
+        //        ee.emit("FINISHDRAW", context)
+        this.addPaintEventListener()
+    }
+
+    componentDidUpdate() {
+
+        const context = this.drawCanvas()
+
+        //ee.emit("FINISHDRAW", context)
+    }
+    componentWillUnmount() {
+        this.removePaintEventListener()
+    }
+    drawCanvas = () => {
+        const { curCanvas, canvasHeight, canvasWidth } = this.props
+        const { ctx: editCtx } = curCanvas
+        const canvasBoard = document.getElementById("painter")
         const context = canvasBoard.getContext('2d')
-        editCtx && context.drawImage(editCtx.canvas, 0, 0)
+        context.clearRect(0, 0, canvasWidth, canvasHeight)
         context.fillStyle = '#fff'
-        !editCtx && context.fillRect(0, 0, 224, 400)
-        wrapper.innerHTML = null;
-        wrapper.appendChild(canvasBoard)
-        canvasBoard.classList.add("scale-150")
-        canvasBoard.onmousedown = (e) => {
-            console.log(e.currentTarget)
-            context.beginPath();
-            context.moveTo(e.offsetX, e.offsetY);
-            canvasBoard.onmousemove = function (e) {
-                context.lineTo(e.offsetX, e.offsetY);
-                context.strokeStyle = strokeStyle
-                context.lineWidth = 2;
-                context.stroke();
-            };
-        }
-        canvasBoard.onmouseup = function () {
-            context.closePath();
-            ee.emit("FINISHDRAW", context)
-            document.onmousemove = function () {
-                return false;
-            }
-        }
+        context.fillRect(0, 0, canvasWidth, canvasHeight)
+        editCtx && context.drawImage(editCtx.canvas, 0, 0)
+        return context
+    }
+    removePaintEventListener = () => {
+        const canvasBoard = document.getElementById("painter")
+        canvasBoard.onmousedown = null
+        canvasBoard.onmousemove = null
+        canvasBoard.onmousedown = null
+        ee.removeListener("CHANGECOLOR", this.changeStrokeStyle)
+        ee.removeListener("CHANGELINEWIDTH", this.changeLineWidth)
+    }
+    addPaintEventListener = () => {
         ee.addListener("CHANGECOLOR", this.changeStrokeStyle)
+        ee.addListener("CHANGELINEWIDTH", this.changeLineWidth)
+    }
+    changeLineWidth = (lineWidth) => {
+        this.setState({ lineWidth: lineWidth })
+        console.log(lineWidth)
     }
     changeStrokeStyle = (color) => {
         this.setState({ strokeStyle: color });
     }
-    componentWillUnmount() {
-        ee.removeListener("CHANGECOLOR", this.changeStrokeStyle)
-    }
-    componentDidUpdate() {
-        const { canvasList, curEditId } = this.props
-        const { strokeStyle } = this.state
-        const wrapper = document.getElementById("canvasBoard-wrapper")
-        const { ctx: editCtx } = canvasList.find(c => c.id === curEditId)
-        const canvasBoard = document.createElement('canvas')
-        canvasBoard.height = 400;
-        canvasBoard.width = 225;
+    painterBegin = (e) => {
+        const canvasBoard = e.currentTarget
         const context = canvasBoard.getContext('2d')
-        editCtx && context.drawImage(editCtx.canvas, 0, 0)
-        context.fillStyle = '#fff'
-        !editCtx && context.fillRect(0, 0, 224, 400)
-        wrapper.innerHTML = null;
-        wrapper.appendChild(canvasBoard)
-        canvasBoard.onmousedown = (e) => {
-            context.beginPath();
-            context.moveTo(e.offsetX, e.offsetY);
-            document.onmousemove = function (e) {
-                context.lineTo(e.offsetX, e.offsetY);
-                context.strokeStyle = strokeStyle
-                context.lineWidth = 2;
-                context.stroke();
-            };
-        }
-        canvasBoard.onmouseup = function () {
-            context.closePath();
-            ee.emit("FINISHDRAW", context)
-            document.onmousemove = function () {
-                return false;
-            }
-        }
-        canvasBoard.classList.add("scale-150")
+        context.beginPath();
+        context.moveTo(e.offsetX, e.offsetY);
+        const { strokeStyle, lineWidth } = this.state
+        context.strokeStyle = strokeStyle
+        context.lineWidth = lineWidth;
+        context.lineCap = "round"
+        context.lineJoin = "round"
+        canvasBoard.onmousemove = function (e) {
+            context.lineTo(e.offsetX, e.offsetY);
+
+            context.stroke();
+        };
+    }
+
+
+
+    paintEnd = (e) => {
+        const context = e.currentTarget.getContext('2d')
+        context.closePath();
+        console.log(234)
+        ee.emit("FINISHDRAW", context)
+        e.currentTarget.onmousemove = null
     }
     exportImageData = () => {
         const canvasBoard = document.getElementById("canvasBoard");
@@ -89,6 +87,14 @@ class CanvasBoard extends Component {
     }
     render() {
         return (<div id="canvasBoard-wrapper" className="flex justify-center">
+            <canvas
+                id="painter"
+                height={this.props.canvasHeight}
+                width={this.props.canvasWidth}
+
+                onMouseDown={this.painterBegin}
+                onMouseUp={this.paintEnd}
+            ></canvas>
         </div>
         );
     }
