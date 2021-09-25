@@ -7,3 +7,8 @@
 
 
 ## there is a problem with sharedArrayBuffer api in Chrome.To resolve it,learn more in  https://github.com/ffmpegwasm/ffmpeg.wasm
+
+### expect support :
+* text to speech
+* speech to text
+* copy&&paste
